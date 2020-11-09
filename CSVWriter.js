@@ -1,19 +1,45 @@
-/* CSV creation/conversion Example */
-let headersStr = getCSVstring_PropNamesAsHeaders(initialObject, ",");
-//Check props for delimiter and replace with something else 
-let cleanData = regexReplaceinProps(initialObject, /,/g, " ")
-let recordsStr = ConvertToCSV(cleanData, ",");
-writeCSV(headersStr + recordsStr, "MyCSVFile");
+/* CSV creation/conversion Example - Copy this into chrome snippets*/
+let uploadBtn = document.createElement('input');
+uploadBtn.setAttribute('type', 'file');
+uploadBtn.addEventListener('change', handleFiles, false);
+
+let parent = document.querySelector('body')
+parent.appendChild(uploadBtn);
+
+function handleFiles() {
+    const fileList = this.files;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+
+        let data = JSON.parse(e.target.result)
+
+        let initialArray = data.map((i)=>JSON.flatten(i))
+        console.log(initialArray);
+        
+        //Prep - I have non-uniform objects so I need to create a masterObject to ensure my columns line up 
+        let masterObj = determineMasterObject(initialArray)
+        let headersStr = getCSVstring_PropNamesAsHeaders(masterObj, ",");
+        let cleanData = regexReplaceinProps(initialArray, /,/g, " ")
+        //Convert & Write
+        let recordsStr = ConvertToCSV(cleanData, masterObj,",");
+        writeCSV(headersStr + recordsStr, "Companies");
+
+    }
+
+    reader.readAsText(fileList[0])
+
+}
 
 
 /* Actual Functions */
-function ConvertToCSV(objArray, delimiter) {
+function ConvertToCSV(objArray, masterObj, delimiter) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';
+
     //Store some variables on outer loop for Performance
-    let masterObjKeyStr = Object.keys(array[0]).toString();
-    let masterObjPropCount = Object.keys(array[0]).length;
-   
+    let masterObjKeyStr = Object.keys(masterObj).toString();
+    let masterObjPropCount = Object.keys(masterObj).length;
+
     //Iterate through Object Array 
     for (var i = 0; i < array.length; i++) {
 
@@ -24,14 +50,9 @@ function ConvertToCSV(objArray, delimiter) {
 
             //Missing and/or Out of Order Properties
             if (Object.keys(array[i]).length <= masterObjPropCount) {
-                let fixedObj = PropsMissingAndOrWrongOrder(array[0], array[i]);
+                let fixedObj = PropsMissingAndOrWrongOrder(masterObj, array[i]);
                 str += toCSVString(fixedObj, delimiter)
-                console.log("Line " + i + " Missing and/or out of Order Properties. Adding Nulls/Resorting")
             }
-        }
-        //If there are Extra Properties, just ignore these lines for now
-        if (Object.keys(array[i]).length > masterObjPropCount) {
-            console.log("Line " + i + " Has Extra Properties. NOT WRITING TO CSV")
         }
     }
     return str;
@@ -89,10 +110,10 @@ function writeCSV(cleanData, fileNameNoExt) {
 }
 
 
-function getCSVstring_PropNamesAsHeaders(objArray, delimiter) {
+function getCSVstring_PropNamesAsHeaders(masterObj, delimiter) {
     let headersObj = {};
     headersObj.str = "";
-    for (let field in objArray[0]) {
+    for (let field in masterObj) {
         headersObj.str = headersObj.str + field + delimiter
     }
     return headersObj.str + '\r\n';
