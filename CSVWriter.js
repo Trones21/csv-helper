@@ -81,13 +81,14 @@ function PropsMissingAndOrWrongOrder(master, objToValidate) {
             if (CheckKey === FindKey) {
                 found = true
                 fixedObj[FindKey] = objToValidate[FindKey]
+                break; //For perf
             }
         }
 
         //Property wasn't found, so we must add a null key 
         if (found === false) {
 
-            fixedObj[FindKey] = "BLAH";
+            fixedObj[FindKey] = null;
         }
     }
 
