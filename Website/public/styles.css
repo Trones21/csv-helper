@@ -20,3 +20,14 @@ h1,h2,h3, p{
     justify-content: flex-start;
 }
 
+.fileInput{
+    color: white;
+    border-right: #f7f9f9;
+    border-right-width: thick;
+    border-right-style: groove;
+}
+
+table{
+    margin: 0% 3% 3% 3%;
+}
+
