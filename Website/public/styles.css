@@ -2,8 +2,26 @@ body {
 background-color: rgb(37, 43, 43);
 }
 
-h1,h2,h3, p{
+h1,h2,h3,h4, h5, h6, p{
     color: white;
+}
+
+table{
+    margin: 0% 3% 3% 3%;
+}
+
+img{
+    object-fit: contain;
+    max-width: 80vw;
+    max-height:46vh; 
+    height: auto;
+    width: auto;
+    margin-top:1vh;
+    margin-bottom: 2vh;
+}
+.imgContainer{
+    display: flex;
+    justify-content: center;
 }
 
 .header{
@@ -11,13 +29,37 @@ h1,h2,h3, p{
 }
 
 .outerContainer {
-    height: 100%;
-    width: 100%;
+
+    width: 95%;
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+}
+
+.UISelectButtons{
+ margin: 1vh;
+}
+
+.uiJSONtoCSV{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+}
+
+.uiCSVAnalyzer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+}
+
+.descriptionText{
+    max-width: 70%;
 }
 
 .fileInput{
@@ -27,7 +69,4 @@ h1,h2,h3, p{
     border-right-style: groove;
 }
 
-table{
-    margin: 0% 3% 3% 3%;
-}
 

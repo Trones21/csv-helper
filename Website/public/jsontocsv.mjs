@@ -1,6 +1,8 @@
-//Event Listeners at bottom of file
 
-function convert(){
+
+
+export function convert(){
+    console.log("Convert func called")
     const myWorker = new Worker("worker.js");
     let fileNode = document.querySelector('.fileInput');
     myWorker.postMessage({fileList:fileNode.files, delimiter: document.querySelector('#specifyDelimiter').value.trim() || ","});
@@ -43,7 +45,7 @@ const updateStepList = (stepClassName) => {
     stepList.getElementsByClassName(stepClassName)[0].innerText = '\u2714';
 }
 
-const cleanUpModal = () => {
+export const cleanUpModal = () => {
     let modalBody = document.getElementsByClassName('modal-body')[0];
     modalBody.innerHTML = `<table class="stepList">
     <tr class="step">
@@ -273,10 +275,7 @@ JSON.flatten = function(data) {
     return result;
 }
 
-let uploadBtn = document.getElementsByClassName('uploadbtn')[0];
-uploadBtn.addEventListener('click', convert, false);
 
-let modalCloseBtn = document.getElementsByClassName('modalClose')[0];
-modalCloseBtn.addEventListener('click', cleanUpModal, false);
+
 
 

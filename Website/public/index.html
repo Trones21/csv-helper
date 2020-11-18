@@ -33,14 +33,96 @@
             <h1>CSV-Helper</h1>
         </div>
         <div class="row">
-            <p>Convert <strong>nested</strong> and <strong>non-uniform</strong> JSON Object Arrays to CSV</p>
+           <h5>Convert Your Data, Know Your Data</h5> 
         </div>
-        <div style="height:50vh">
-            <img src="jsontocsv.png" style="height:46vh; margin-top:1vh;"
-                alt="An image showing JSON to CSV conversion"></img>
+        <div class="UISelectButtons">
+            <button class="btn btn-info">JSON to CSV</button>
+            <button class="btn btn-info">Completeness</button>
+        </div>
+        <div class="uiJSONtoCSV">
+            <div class="row text-center descriptionText">
+                <p>Convert <strong>nested</strong> and <strong>non-uniform</strong> JSON Object Arrays to CSV</p>
+            </div>
+            <div class='imgContainer' style="height:50vh">
+                <img src="jsontocsv.png"
+                    alt="An image showing JSON to CSV conversion"></img>
+            </div>
+            <div class="row">
+                <h3>Convert JSON to CSV</h3>
+            </div>
+
+            <div class="row">
+                <form class="md-form">
+                    <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" class="fileInput">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row flex justify-content-center">
+                <label for="specifyDelimiter" style="color:white; padding: 2%;">Specify a Delimiter:</label>
+                <input class="form-control" id="specifyDelimiter" style="width:10%" maxlength="1">
+
+            </div>
+            <div class="row">
+                <button class="converterUploadbtn btn btn-primary" style="margin-top:4%" type="button" data-toggle="modal"
+                    data-target="#converterModal">Convert JSON to CSV</button>
+
+                <!-- Modal -->
+                <div class="modal fade right" id="converterModal" tabindex="-1" role="dialog"
+                    aria-labelledby="converterModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="converterModalLabel">Converting to CSV...</h5>
+                                <button type="button" class="converterModalClose close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="stepList">
+                                    <tr class="step">
+                                        <td class="loadFileStatus"></td>
+                                        <td>Load File</td>
+                                    </tr>
+                                    <tr class="step">
+                                        <td class="parseFileStatus"></td>
+                                        <td>Parse File</td>
+                                    </tr>
+                                    <tr class="step">
+                                        <td class="flattenArrayStatus"></td>
+                                        <td>Flatten Object Array</td>
+                                    </tr>
+                                    <tr class="step">
+                                        <td class="convertFileStatus"></td>
+                                        <td>Convert</td>
+                                    </tr>
+                                </table>
+
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class= "uiCSVAnalyzer" style='display:none;'>
+        <div class="row text-center descriptionText">
+            <p>Create a CSV about your CSV. Generates a file with your column names and statistics for each column</p>
+        </div>
+        <div class='imgContainer' style="height:50vh">
+            <!-- <img src="jsontocsv.png"
+                alt="An image showing CSV completeness analysis"></img> -->
         </div>
         <div class="row">
-            <h3>Convert JSON to CSV</h3>
+            <h3>CSV Analyzer</h3>
         </div>
 
         <div class="row">
@@ -52,62 +134,21 @@
                 </div>
             </form>
         </div>
-
-        <div class="row flex justify-content-center">
-            <label for="specifyDelimiter" style="color:white; padding: 2%;">Specify a Delimiter:</label>
-            <input class="form-control" id="specifyDelimiter" style="width:10%" maxlength="1">
-
-        </div>
         <div class="row">
-            <button class="uploadbtn btn btn-primary" style="margin-top:4%" type="button" data-toggle="modal"
-                data-target="#statusBarModal">Convert JSON to CSV</button>
-
-            <!-- Modal -->
-            <div class="modal fade right" id="statusBarModal" tabindex="-1" role="dialog"
-                aria-labelledby="statusBarModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-side modal-bottom-right modal-notify modal-info" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="statusBarModalLabel">Converting to CSV...</h5>
-                            <button type="button" class="modalClose close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <table class="stepList">
-                                <tr class="step">
-                                    <td class="loadFileStatus"></td>
-                                    <td>Load File</td>
-                                </tr>
-                                <tr class="step">
-                                    <td class="parseFileStatus"></td>
-                                    <td>Parse File</td>
-                                </tr>
-                                <tr class="step">
-                                    <td class="flattenArrayStatus"></td>
-                                    <td>Flatten Object Array</td>
-                                </tr>
-                                <tr class="step">
-                                    <td class="convertFileStatus"></td>
-                                    <td>Convert</td>
-                                </tr>
-                            </table>
-
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                                    <span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button class="analyzerUploadbtn btn btn-primary" style="margin-top:4%" type="button" data-toggle="modal"
+                data-target="#analyzeCSVModal">Analyze CSV</button>
         </div>
+
     </div>
-    <script src='jsontocsv.js'></script>
+    </div>
+    <script type='module' src='main.js'></script>
+    <script type='module' src='jsontocsv.mjs'></script>
+    <script type='module' src='CSVAnalyzer.mjs'></script>
     <script src='worker.js'></script>
 </body>
+<footer>
+    CSV-Helper is run 100% locally. Your data NEVER leaves your computer.
+</footer>
 
 
 </html>
