@@ -1,8 +1,10 @@
 let memoryAvailable = 0;
+let waitForMemoryResolve = ()  => {};
+let pauseMe = () => {};
 let workers = [];
  
  onmessage = function(e){
-    console.log(e)
+    
     switch(e.data.msgType){
     case "processData":
         if(e.data.fileList.length === 1){
@@ -12,9 +14,10 @@ let workers = [];
         }
     break;
     case "memoryInfoReceived":
-        console.log("Memrec")
         console.log(e.data.memoryAvailable)
-        memoryAvailable = e.data.memoryAvailable
+        memoryAvailable = e.data.memoryAvailable;
+        waitForMemoryResolve(memoryAvailable);
+
     break;
     }
  }
@@ -22,7 +25,8 @@ let workers = [];
  async function workerStuff(f){
     
     //Note: Single Object cannot be bigger than 1/2 of the CHUNK_SIZE, otherwise I might not be able to parse it
-    //Is there any way to show the user this (Not speedily, but if I read the whole file, then yes) 
+    //Is there any way to show the user this (Not speedily, but if I read the whole file, then yes)
+    
     let CHUNK_SIZE = 102400000;
     let file = f.data.fileList[0];
     let chunkCount = Math.ceil(file.size / CHUNK_SIZE);
@@ -31,36 +35,50 @@ let workers = [];
     //initial Testing
     // let startIndex = 0;
     
-    postMessage({msgType:"memoryInfoRequested"})
-    let wait = await (async function() {setTimeout(()=> {console.log("Waited")}), 2000})
-    let x = await wait;
-    // while(memoryAvailable < 5){
-    //     console.log("Waiting for Memory Check")
+    memoryAvailable = await waitForMemory();
+   
+    for( let chunkId = 0 ; chunkId < chunkCount; chunkId++){
+        let testWorker = new Worker("worker.js");
+        let startIndex = chunkId * CHUNK_SIZE;
+        console.log(chunkId);
+        testWorker.postMessage({workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE, file:file, options: options})
+        testWorker.onmessage = handleMessage;
+        workers.push({worker:testWorker, workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE});
+        await sleep(100);
+        memoryAvailable = await waitForMemory();
+        //MemoryAvailable isn't decreasing by the actual amount -- check calculation later
+        while(memoryAvailable < CHUNK_SIZE * 10 ){
+            console.log("Wating for memory")
+        }
         
-    // }
-    
-    console.log(memoryAvailable + " mem avail managingWorker")
-    // for( let chunkId = 0 ; chunkId < 5; chunkId++){
-    //     let testWorker = new Worker("worker.js");
-    //     startIndex = chunkId * CHUNK_SIZE;
- 
-    //     testWorker.postMessage({workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE, file:file, options: options})
-    //     testWorker.onmessage = handleMessage;
-    //     workers.push({worker:testWorker, workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE});
-    //     memoryAvailable = 
-    //     while(memoryAvailable < memoryNeededPerChunk * 2 ){
-    //         //await
-    //     }
-        
-    // }
-    // console.log(workers)
+    }
+    //console.log(workers)
 
 }
+
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+async function waitForMemory() {
+    return new Promise((resolve, reject) => {
+      waitForMemoryResolve = resolve;
+      postMessage({msgType:"memoryInfoRequested"})
+    })   
+}
+
 function handleMessage(e){
     //switch()
     console.log("Worker Finished")
-    console.log(e)
-    workers.findIndex()
+    console.log(workers.length)
+    while(workers.length > 10){
+        //Stabilizes Memory!!!!!
+        console.log("Removing Worker")
+        let deleteMe =  workers.shift();
+        deleteMe.worker.terminate();
+    }
+    //console.log(e)
+    //workers.findIndex()
     
     
 }

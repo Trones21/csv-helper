@@ -1,7 +1,7 @@
 onmessage = function(e){
     //console.log(e)
    let t = e.data;
-   console.log(t.workerId)
+   //console.log(t.workerId)
    var fr = new FileReader();
    var slice = t.file.slice(t.startIndex, t.startIndex + t.CHUNK_SIZE);
    let processChunkBoundArgs = processChunk.bind({slice:slice, workerId: t.workerId});
