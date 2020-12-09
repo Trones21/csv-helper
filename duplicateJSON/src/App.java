@@ -20,18 +20,19 @@ public class App {
             //Remove starting and ending [], add comma after last object 
             fileContent = fileContent.replaceFirst("\\[", "");
             fileContent = fileContent.substring(0, fileContent.lastIndexOf("]") - 1) + ",";
-
+            String writeStr = fileContent;
              
             FileWriter outputStream = new FileWriter("./files/output.json");
             outputStream.write("[");
-            //16/13 loops - 8GB given a 64KB input file
-            for (var x = 0; x < 2; x++){
-                String writeStr = fileContent;
+            
             //Careful - this is Exponential growth
-                for(var i = 0; i < 13; i++){
-                    writeStr += writeStr;
-                }
-
+            for(var i = 0; i < 10; i++){
+                writeStr += writeStr;
+            }
+            
+            //Write Big String X times
+            for (var x = 0; x < 1596; x++){
+                System.out.println(x);
                 outputStream.write(writeStr);
         }
         outputStream.write("{\"Done\":\"Done\"}]");

@@ -2,12 +2,22 @@
 
 
 export function convert(){
-    console.log("Convert func called")
-    const myWorker = new Worker("worker.js");
+    // console.log("Convert func called")
+    // let memoryAvailable = performance.memory.usedJSHeapSize;
+    // console.log(memoryAvailable);
+    // console.log(performance.memory.jsHeapSizeLimit + "");
+    // console.log(performance.memory.totalJSHeapSize);
+    let managingWorker = new Worker("managingWorker.js");
     let fileNode = document.querySelector('.fileInput');
-    myWorker.postMessage({fileList:fileNode.files, delimiter: document.querySelector('#specifyDelimiter').value.trim() || ","});
-    myWorker.onmessage = function(e){
+    managingWorker.postMessage({fileList:fileNode.files, msgType:"processData", options:{delimiter: document.querySelector('#specifyDelimiter').value.trim() || ","}});
+    
+    managingWorker.onmessage = function(e){
         switch(e.data.msgType){
+            case "memoryInfoRequested":
+                console.log("reqMem")
+                let memAvail = performance.memory.jsHeapSizeLimit - performance.memory.totalJSHeapSize;
+                managingWorker.postMessage({msgType:"memoryInfoReceived", memoryAvailable: memAvail});
+                break;
             case "stepList":
                 updateStepList(e.data.stepClassName)
                 break;
@@ -31,6 +41,8 @@ export function convert(){
                 break;
         }
     }
+
+    console.log(managingWorker);
 }
 
 const updateProgressBar = (Message, pctDone)=>{
