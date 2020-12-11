@@ -33,19 +33,18 @@
             <h1>CSV-Helper</h1>
         </div>
         <div class="row">
-           <h5>Convert Your Data, Know Your Data</h5> 
+            <h5>Convert Your Data, Know Your Data</h5>
         </div>
         <div class="UISelectButtons">
             <button class="btn btn-info">JSON to CSV</button>
-            <button class="btn btn-info">Completeness</button>
+            <button class="btn btn-info">CSV Analyzer</button>
         </div>
         <div class="uiJSONtoCSV">
             <div class="row text-center descriptionText">
                 <p>Convert <strong>nested</strong> and <strong>non-uniform</strong> JSON Object Arrays to CSV</p>
             </div>
             <div class='imgContainer' style="height:50vh">
-                <img src="jsontocsv.png"
-                    alt="An image showing JSON to CSV conversion"></img>
+                <img src="jsontocsv.png" alt="An image showing JSON to CSV conversion"></img>
             </div>
             <div class="row">
                 <h3>Convert JSON to CSV</h3>
@@ -67,8 +66,8 @@
 
             </div>
             <div class="row">
-                <button class="converterUploadbtn btn btn-primary" style="margin-top:4%" type="button" data-toggle="modal"
-                    data-target="#converterModal">Convert JSON to CSV</button>
+                <button class="converterUploadbtn btn btn-primary" style="margin-top:4%" type="button"
+                    data-toggle="modal" data-target="#converterModal">Convert JSON to CSV</button>
 
                 <!-- Modal -->
                 <div class="modal fade right" id="converterModal" tabindex="-1" role="dialog"
@@ -77,7 +76,8 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="converterModalLabel">Converting to CSV...</h5>
-                                <button type="button" class="converterModalClose close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="converterModalClose close" data-dismiss="modal"
+                                    aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -112,8 +112,30 @@
                     </div>
                 </div>
             </div>
+            <div class="row advancedOptionsToggle">
+
+                <div class="text-white">Advanced Options</div>
+            </div>
+            <div class="row d-none advancedOptions">
+                <div class="outputOptions">
+                    <div>If multiple JSON files are selected, you can choose to combine the data, or keep it separate:</div>
+
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" id="defaultUnchecked" name="outputOptions">
+                        <label class="custom-control-label" for="defaultUnchecked">Combine Data</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" id="defaultUnchecked" name="outputOptions">
+                        <label class="custom-control-label" for="defaultUnchecked">Keep Separate (1 CSV per JSON)</label>
+                    </div>
+                </div>
+            </div>
+            <div>Choose Columns</div>
+
+
         </div>
-    <div class= "uiCSVAnalyzer" style='display:none;'>
+    </div>
+    <div class="uiCSVAnalyzer" style='display:none;'>
         <div class="row text-center descriptionText">
             <p>Create a CSV about your CSV. Generates a file with your column names and statistics for each column</p>
         </div>

@@ -22,15 +22,6 @@ function processChunk(slice, workerId) {
     postMessage({text:text, workerId:this.workerId});
     }
 
-function finished(startTime){
-   let endTime = Date.now();
-   console.log(startTime)
-   console.log((endTime - startTime)/1000 + " seconds" )
-}
-
-function doStuff(str){
-   return str;
-}
 
 function check4Objects(string){
 

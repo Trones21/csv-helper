@@ -34,10 +34,39 @@ converterUploadbtn.addEventListener('click', convert, false);
 let converterModalClosebtn = document.getElementsByClassName('converterModalClose')[0];
 converterModalClosebtn.addEventListener('click', cleanUpModal, false);
 
+let advancedOptionsToggle = document.getElementsByClassName('advancedOptionsToggle')[0];
+advancedOptionsToggle.addEventListener('click', ()=> {
+    //Show Options
+    let el = document.getElementsByClassName('advancedOptions')[0];
+    if(Array.from(el.classList).includes("d-none")){
+       el.className = el.className.replace(/d-none/g, '');
+    } else {
+        el.className = el.className.trim() + ' d-none';
+    }
+    
+    //If multiple Files have been selected enable the "outputOptions" 
+    // let fileNode = document.querySelector('.fileInput');
+    // if (fileNode.files.length > 1) {
+
+    //Change style of toggling element
+    el = document.getElementsByClassName('advancedOptionsToggle')[0];
+    if(el.style.width !== '100%'){
+        el.style.width = '100%';
+    }else{
+       el.style.width = '60%'; 
+    }
+    
+
+})
+
+
+
+
 //CSV Analyzer Listeners
 let analyzerUploadbtn = document.getElementsByClassName('analyzerUploadbtn')[0];
 analyzerUploadbtn.addEventListener('click', analyze, false);
 
 let analyzerModalClosebtn = document.getElementsByClassName('analyzerModalClose')[0];
 analyzerModalClosebtn.addEventListener('click', () => {console.log("to Implement")}, false);
+
 

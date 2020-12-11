@@ -76,11 +76,7 @@ function handleMessage(e){
         console.log("Removing Worker")
         let deleteMe =  workers.shift();
         deleteMe.worker.terminate();
-    }
-    //console.log(e)
-    //workers.findIndex()
-    
-    
+    }    
 }
 
 function handleMultipleFiles(e){
@@ -103,9 +99,20 @@ function findMaxDepth(text){
     //but we don't know the level of nesting until we look through the entire chunk of text
     //SmallObj is the 1st top level object. 
     //We should return the charCount for the unprocessed text (before & after). This text will be processed later 
+    //We also cannot assume that this is valid JSON 
+    //It should be valid json, except for the start and the end, if it isn't valid, then we can't parse anyway, and we need to let the user know it's invalid
      
 
 }
+
+function addDepth(){
+
+}
+
+function subtractDepth(){
+    
+}
+
 
 //CSV Functions
 function ConvertToCSV(objArray, masterObj, delimiter) {

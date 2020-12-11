@@ -1,55 +1,68 @@
 
+//Note: Need to handle when there is an array with no keys: "m": [1, 2, 3]
+//This is a case where the user needs to determine the proper output
 
+export function convert() {
 
-export function convert(){
-    // console.log("Convert func called")
-    // let memoryAvailable = performance.memory.usedJSHeapSize;
-    // console.log(memoryAvailable);
-    // console.log(performance.memory.jsHeapSizeLimit + "");
-    // console.log(performance.memory.totalJSHeapSize);
-    let managingWorker = new Worker("managingWorker.js");
+    //Pre-Conversion Checks
     let fileNode = document.querySelector('.fileInput');
-    managingWorker.postMessage({fileList:fileNode.files, msgType:"processData", options:{delimiter: document.querySelector('#specifyDelimiter').value.trim() || ","}});
-    
-    managingWorker.onmessage = function(e){
-        switch(e.data.msgType){
-            case "memoryInfoRequested":
-                console.log("reqMem")
-                let memAvail = performance.memory.jsHeapSizeLimit - performance.memory.totalJSHeapSize;
-                managingWorker.postMessage({msgType:"memoryInfoReceived", memoryAvailable: memAvail});
-                break;
-            case "stepList":
-                updateStepList(e.data.stepClassName)
-                break;
-            case "progBar":
-                updateProgressBar(e.data.params.msg, e.data.params.pctDone)
-                break;
-            case "outputData":
-                let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
-                updateStepList('convertFileStatus');
-                updateProgressBar(`Converted! Writing CSV` , 95)
-                writeCSV(e.data.headersStr + e.data.recordsStr, outfileName);
-                updateProgressBar(`Finished!` , 100)
-                break;
-            case "error":
-                let errorDiv = document.createElement('div');
-                errorDiv.innerText = e.data.err;
-                document.getElementsByClassName('modal-body')[0].appendChild(errorDiv);
-                break;
-            default:
-                console.log("Invalid Case sent from Worker")
-                break;
-        }
-    }
+    if (fileNode.files.length > 1) { // && No option selected){
+        window.alert("Multiple input files chosen. You must choose an output option under the Advanced Options Menu")
+    } else {
 
-    console.log(managingWorker);
+        //Convert
+        let managingWorker = new Worker("managingWorker.js");
+        let options = gatherOptions(fileNode.files.length);
+        managingWorker.postMessage({ fileList: fileNode.files, msgType: "processData", options: options });
+
+        managingWorker.onmessage = function (e) {
+            switch (e.data.msgType) {
+                case "memoryInfoRequested":
+                    console.log("reqMem")
+                    let memAvail = performance.memory.jsHeapSizeLimit - performance.memory.totalJSHeapSize;
+                    managingWorker.postMessage({ msgType: "memoryInfoReceived", memoryAvailable: memAvail });
+                    break;
+                case "stepList":
+                    updateStepList(e.data.stepClassName)
+                    break;
+                case "progBar":
+                    updateProgressBar(e.data.params.msg, e.data.params.pctDone)
+                    break;
+                case "outputData":
+                    let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
+                    updateStepList('convertFileStatus');
+                    updateProgressBar(`Converted! Writing CSV`, 95)
+                    writeCSV(e.data.headersStr + e.data.recordsStr, outfileName);
+                    updateProgressBar(`Finished!`, 100)
+                    break;
+                case "error":
+                    let errorDiv = document.createElement('div');
+                    errorDiv.innerText = e.data.err;
+                    document.getElementsByClassName('modal-body')[0].appendChild(errorDiv);
+                    break;
+                default:
+                    console.log("Invalid Case sent from Worker")
+                    break;
+            }
+        }
+
+        console.log(managingWorker);
+    }
 }
 
-const updateProgressBar = (Message, pctDone)=>{
+const gatherOptions = (fileNode) => {
+    let options = {};
+    console.log(fileNode)
+    options.delimiter = document.querySelector('#specifyDelimiter').value.trim() || ",";
+
+    return options;
+}
+
+const updateProgressBar = (Message, pctDone) => {
     document.querySelector('.progress-bar').setAttribute('aria-valuenow', pctDone);
     document.querySelector('.progress-bar').setAttribute('style', 'width: ' + pctDone + '%');
     document.querySelector('.progress-bar').children[0].innerHTML = Message
-} 
+}
 
 
 const updateStepList = (stepClassName) => {
@@ -90,27 +103,27 @@ const handleFilewithoutWorker = () => {
     let fileNode = document.querySelector('.fileInput');
     const fileList = fileNode.files;
     let reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         updateProgressBar("File Loaded", 0);
-        try{
-        let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
-        let data = JSON.parse(e.target.result)
-        updateProgressBar("File Parsed", 0)
-        let initialArray = data.map((i)=>JSON.flatten(i))
-        updateProgressBar("Array Flattened", 0);
-        let delimiter = document.querySelector('#specifyDelimiter').value.trim() || ",";
-        
-        //Prep - I have non-uniform objects so I need to create a masterObject to ensure my columns line up 
-        let masterObj = determineMasterObject(initialArray)
-        let headersStr = getCSVstring_PropNamesAsHeaders(initialArray, masterObj, delimiter);
-        let cleanData = regexReplaceinProps(initialArray, /,/g, " ")
-        
-        //Convert & Write
-        let recordsStr = ConvertToCSV(cleanData, masterObj, delimiter);
-        updateProgressBar(`Finished! Writing File` , 100)
-        writeCSV(headersStr + recordsStr, outfileName);
-        
-        } catch(err){
+        try {
+            let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
+            let data = JSON.parse(e.target.result)
+            updateProgressBar("File Parsed", 0)
+            let initialArray = data.map((i) => JSON.flatten(i))
+            updateProgressBar("Array Flattened", 0);
+            let delimiter = document.querySelector('#specifyDelimiter').value.trim() || ",";
+
+            //Prep - I have non-uniform objects so I need to create a masterObject to ensure my columns line up 
+            let masterObj = determineMasterObject(initialArray)
+            let headersStr = getCSVstring_PropNamesAsHeaders(initialArray, masterObj, delimiter);
+            let cleanData = regexReplaceinProps(initialArray, /,/g, " ")
+
+            //Convert & Write
+            let recordsStr = ConvertToCSV(cleanData, masterObj, delimiter);
+            updateProgressBar(`Finished! Writing File`, 100)
+            writeCSV(headersStr + recordsStr, outfileName);
+
+        } catch (err) {
             console.log(err)
         }
 
@@ -128,12 +141,12 @@ function ConvertToCSV(objArray, masterObj, delimiter) {
     //Store some variables on outer loop for Performance
     let masterObjKeyStr = Object.keys(masterObj).toString();
     let masterObjPropCount = Object.keys(masterObj).length;
-    
+
     //Iterate through Object Array 
     for (var i = 0; i < array.length; i++) {
-        if(((i/array.length)*100)%10 === 0){
-            let pctDone = ((i/array.length)*100)
-            updateProgressBar(`Converting: ${pctDone}% Done` , pctDone)
+        if (((i / array.length) * 100) % 10 === 0) {
+            let pctDone = ((i / array.length) * 100)
+            updateProgressBar(`Converting: ${pctDone}% Done`, pctDone)
 
         }
         //Compare Properties 
@@ -174,7 +187,7 @@ function PropsMissingAndOrWrongOrder(master, objToValidate) {
                 fixedObj[FindKey] = objToValidate[FindKey]
                 break; //For perf
             }
-        
+
         }
 
         //Property wasn't found, so we must add a null key 
@@ -217,7 +230,7 @@ function determineMasterObject(objArray) {
 
 function writeCSV(cleanData, fileNameNoExt) {
 
-    let data = new Blob([cleanData],{
+    let data = new Blob([cleanData], {
         type: "text/csv;charset=utf-8"
     });
     let url = window.URL.createObjectURL(data);
@@ -250,7 +263,7 @@ function removeDelimiterfromProps(objArr, delimiter) {
 }
 
 function regexReplaceinProps(objArr, expression, replacement) {
-    let regex = new RegExp(expression,"g")
+    let regex = new RegExp(expression, "g")
     for (let obj of objArr) {
         for (let key in obj) {
             if (typeof obj[key] == "string") {
@@ -263,7 +276,7 @@ function regexReplaceinProps(objArr, expression, replacement) {
 }
 
 //When the obj has the same property name at multiple levels, you need to differentiate between them
-JSON.flatten = function(data) {
+JSON.flatten = function (data) {
     var result = {};
     function recurse(cur, prop) {
         if (Object(cur) !== cur) {

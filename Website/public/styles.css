@@ -69,4 +69,21 @@ img{
     border-right-style: groove;
 }
 
+.advancedOptionsToggle{
+    cursor: pointer;
+    background-color: #343a40;
+    width:60%;
+    margin: 2vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.outputOptions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
 
