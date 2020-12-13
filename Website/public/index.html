@@ -116,21 +116,49 @@
 
                 <div class="text-white">Advanced Options</div>
             </div>
-            <div class="row d-none advancedOptions">
-                <div class="outputOptions">
-                    <div>If multiple JSON files are selected, you can choose to combine the data, or keep it separate:</div>
+            <div class="row flex d-none advancedOptions">
+                <div class="col-6 columnSelector">
+                    <h4>Choose Columns (All included by default):</h4>
+                    <table class="columnSelectorTable">
+                        <th>Property Name</th>
+                        <th>Example Data</th>
+                        Button overlay -- Detect Fields
+                    </table>
+                </div>
+                <div class="col-6 outputOptions">
+                    <h4>Output Options:</h4>
+                    <div class="opt multipleFiles">
+                        <div>If multiple JSON files are selected, you can choose to combine the data, or keep it
+                            separate:</div>
 
-                    <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" id="defaultUnchecked" name="outputOptions">
-                        <label class="custom-control-label" for="defaultUnchecked">Combine Data</label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="combineData" name="outputOptions">
+                            <label class="custom-control-label" for="combineData">Combine Data</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="keepSeparate" name="outputOptions">
+                            <label class="custom-control-label" for="keepSeparate">Keep Separate (1 CSV per
+                                JSON)</label>
+                        </div>
                     </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" id="defaultUnchecked" name="outputOptions">
-                        <label class="custom-control-label" for="defaultUnchecked">Keep Separate (1 CSV per JSON)</label>
+
+                    <h4>Processing Options:</h4>
+                    <div class="opt row flex justify-content-center">
+                        <label for="replaceDelimiter" style="color:white; padding: 2%;">If delimiter character is found, replace with (default is space):</label>
+                        <input class="form-control" id="replaceDelimiter" style="width:40%" maxlength="20">
+                    </div>
+                  
+                    <div class="opt sameShape">
+                        All objects have the same shape
+                        Put this in question mark popup - If all objects are the same shape, then conversion will be faster.
+                        If this option is checked and objects are not the same shape, then the conversion will fail
                     </div>
                 </div>
+                
+               
+
             </div>
-            <div>Choose Columns</div>
+
 
 
         </div>

@@ -78,12 +78,27 @@ img{
     justify-content: center;
 }
 
+.advancedOptions{
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 80vw;
+}
+
 .outputOptions{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
+    align-items:center;
+    justify-content: space-evenly;   
+}
+
+.opt{
+    margin-bottom: 2vh;
+}
+
+.columnSelector{
+    height: 20vh;
 }
 
 
