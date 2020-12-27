@@ -31,19 +31,17 @@ let workers = [];
     let file = f.data.fileList[0];
     let chunkCount = Math.ceil(file.size / CHUNK_SIZE);
     let options = f.data.options;
-    console.log(chunkCount);
     //initial Testing
     // let startIndex = 0;
     
     memoryAvailable = await waitForMemory();
    
     for( let chunkId = 0 ; chunkId < chunkCount; chunkId++){
-        let testWorker = new Worker("worker.js");
+        let chunkWorker = new Worker("worker.js");
         let startIndex = chunkId * CHUNK_SIZE;
-        console.log(chunkId);
-        testWorker.postMessage({workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE, file:file, options: options})
-        testWorker.onmessage = handleMessage;
-        workers.push({worker:testWorker, workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE});
+        chunkWorker.postMessage({workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE, file:file, options: options})
+        chunkWorker.onmessage = handleMessage;
+        workers.push({worker:chunkWorker, workerId:chunkId, startIndex:startIndex, CHUNK_SIZE:CHUNK_SIZE});
         await sleep(100);
         memoryAvailable = await waitForMemory();
         //MemoryAvailable isn't decreasing by the actual amount -- check calculation later
@@ -52,7 +50,7 @@ let workers = [];
         }
         
     }
-    //console.log(workers)
+    console.log(workers)
 
 }
 

@@ -2,6 +2,7 @@ body {
 background-color: rgb(37, 43, 43);
 }
 
+
 h1,h2,h3,h4, h5, h6, p{
     color: white;
 }
@@ -100,5 +101,14 @@ img{
 .columnSelector{
     height: 20vh;
 }
+
+.scrollMsg {
+    position: fixed;
+    top: 0;
+    height: 25px;
+    color: white;
+    background-color: black;
+    width:100vw;
+  }
 
 
