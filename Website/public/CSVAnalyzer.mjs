@@ -1,7 +1,24 @@
 //Get the completion rates of a CSV
 
-export default function analyze(){
+export default function analyzerMain(){
     console.log("analyzing")
+    let fileNode = document.querySelector('.uiCSVAnalyzer').getElementsByClassName("fileInput")[0]
+    let analysisWorker = new Worker("analysisWorker.js");
+    console.log(fileNode.files[0])
+    //Split into chunks if the filesize is X
+    if(fileNode.files[0].size < 104857600){
+        analysisWorker.postMessage(fileNode.files[0])
+        analysisWorker.onmessage = analysisWorkerMessage;
+    }else{
+        
+    }
+
+    
+}
+
+function analysisWorkerMessage(e){
+    console.log("Msg from analysis worker")
+    console.log(e.toString());
 }
 
 // let completionRates = getCompletionRates(initialObject);
@@ -42,25 +59,7 @@ function writeCSV(cleanData, fileName) {
     dLink.click();
 }
 
-function getCompletionRates(objArray){
-    //Assumes all objects have the same properties
-    //Count Properties
-    let outArr = [];
-    for(let k in objArray[0]){
-        let field = k;
-        let nonNullCount = 0;
-        let recordCount = 0;
-        for(let i of objArray){
-           recordCount += 1;
-           nonNullCount += (i[field])? 1 : 0;     
-        }
-        let percentageFilled = (nonNullCount/recordCount)*100;
-        outArr.push({Field: field, totalRows: recordCount, RowsWithValues: nonNullCount , percentageFilled: percentageFilled.toFixed(0) + "%"  })
-    } 
- return outArr;
 
-
-}
 
 function getCSVstring_PropNamesAsHeaders(objArray, delimiter){
     let headersObj = {};

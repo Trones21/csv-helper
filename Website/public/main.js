@@ -1,5 +1,5 @@
 import {convert, cleanUpModal} from './jsontocsv.mjs';
-import analyze from './CSVAnalyzer.mjs';
+import analyzerMain from './CSVAnalyzer.mjs';
 
 var switchUI= function(){
     console.log("switchUi called")
@@ -64,7 +64,7 @@ advancedOptionsToggle.addEventListener('click', ()=> {
 
 //CSV Analyzer Listeners
 let analyzerUploadbtn = document.getElementsByClassName('analyzerUploadbtn')[0];
-analyzerUploadbtn.addEventListener('click', analyze, false);
+analyzerUploadbtn.addEventListener('click', analyzerMain, false);
 
 let analyzerModalClosebtn = document.getElementsByClassName('analyzerModalClose')[0];
 analyzerModalClosebtn.addEventListener('click', () => {console.log("to Implement")}, false);
