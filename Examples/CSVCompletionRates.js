@@ -1,5 +1,4 @@
 //Get the completion rates of a CSV
-
 let completionRates = getCompletionRates(initialObject);
 let headersStr = getCSVstring_PropNamesAsHeaders(completionRates,",");
 let recordsStr = ConvertToCSV(completionRates, ",");
