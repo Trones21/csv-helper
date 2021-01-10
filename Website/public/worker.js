@@ -1,3 +1,5 @@
+import {main} from './parser'
+
 onmessage = function(e){
     //console.log(e)
    let t = e.data;
@@ -22,6 +24,18 @@ function processChunk(slice, workerId) {
     postMessage({text:text, workerId:this.workerId});
     }
 
+
+
+
+
+
+
+
+
+
+
+
+/*OLD CODE Might be able to reuse for non-nested input files --- */
 
 function check4Objects(string){
 
@@ -60,3 +74,5 @@ checkStr = unleakString(checkStr);
 return {json:json, unParsedLen: unParsedPart.length};
 
 }
+
+

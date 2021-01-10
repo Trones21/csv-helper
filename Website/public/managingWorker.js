@@ -89,27 +89,18 @@ function objectArrayEmitter(file){
     console.log(file.size/CHUNK_SIZE + " chunks")        
 }
 
-function findMaxDepth(text){
-    //Our parser can only process a part of the text it is sent, therefore 
-    //we need to find the first TOP level object 
-    //ex. ceo: {name:jon, age:45}, revenue:$100},{smallObj:5},{as: xts 
-    //We wouldn't want to start parsing at ceo, because it is not the top level object, 
-    //but we don't know the level of nesting until we look through the entire chunk of text
-    //SmallObj is the 1st top level object. 
-    //We should return the charCount for the unprocessed text (before & after). This text will be processed later 
-    //We also cannot assume that this is valid JSON 
-    //It should be valid json, except for the start and the end, if it isn't valid, then we can't parse anyway, and we need to let the user know it's invalid
-     
 
-}
-
-function addDepth(){
-
-}
-
-function subtractDepth(){
+//Our parser can only process a part of the text it is sent, therefore 
+//we need to find the first TOP level object 
+//ex. ceo: {name:jon, age:45}, revenue:$100},{smallObj:5},{as: xts 
+//We wouldn't want to start parsing at ceo, because it is not the top level object, 
+//but we don't know the level of nesting until we look through the entire chunk of text
+//SmallObj is the 1st top level object. 
+//We should return the charCount for the unprocessed text (before & after). This text will be processed later 
+//We also cannot assume that this is valid JSON 
+//It should be valid json, except for the start and the end, if it isn't valid, then we can't parse anyway, and we need to let the user know it's invalid
     
-}
+
 
 
 //CSV Functions
