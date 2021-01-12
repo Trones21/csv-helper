@@ -2,8 +2,15 @@
 //Note: Need to handle when there is an array with no keys: "m": [1, 2, 3]
 //This is a case where the user needs to determine the proper output
 
-export function convert() {
 
+export function convert() {
+    
+    const fileStream = streamSaver.createWriteStream('test.txt');
+    let writeChunktoStream = (chunk) =>{
+        new Response(chunk).body
+        .pipeTo(fileStream)
+        .then(success, error)
+    }
     //Pre-Conversion Checks
     let fileNode = document.querySelector('.fileInput');
     if (fileNode.files.length > 1) { // && No option selected){
@@ -17,8 +24,10 @@ export function convert() {
 
         managingWorker.onmessage = function (e) {
             switch (e.data.msgType) {
+                case "streamWriter":
+                    writeChunktoStream("adasdasda---\r\n");
+                    break;
                 case "memoryInfoRequested":
-                    console.log("reqMem")
                     let memAvail = performance.memory.jsHeapSizeLimit - performance.memory.totalJSHeapSize;
                     managingWorker.postMessage({ msgType: "memoryInfoReceived", memoryAvailable: memAvail });
                     break;
@@ -30,10 +39,10 @@ export function convert() {
                     break;
                 case "outputData":
                     let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
-                    updateStepList('convertFileStatus');
-                    updateProgressBar(`Converted! Writing CSV`, 95)
+                    //updateStepList('convertFileStatus');
+                    //updateProgressBar(`Converted! Writing CSV`, 95)
                     writeCSV(e.data.headersStr + e.data.recordsStr, outfileName);
-                    updateProgressBar(`Finished!`, 100)
+                    //updateProgressBar(`Finished!`, 100)
                     break;
                 case "error":
                     let errorDiv = document.createElement('div');
@@ -48,7 +57,11 @@ export function convert() {
 
         console.log(managingWorker);
     }
+
+
 }
+
+
 
 const gatherOptions = (fileNode) => {
     let options = {};

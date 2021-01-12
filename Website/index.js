@@ -1,8 +1,8 @@
 var express = require('express')
 var app = express()
 console.log("Starting Server")
-app.use(express.static('public'))
-app.get('/', function (req, res) {
+app.use(express.static('trials/', {index:'testRun.html'}))
+app.get('/testRun', function (req, res) {
   res.send();
 })
 

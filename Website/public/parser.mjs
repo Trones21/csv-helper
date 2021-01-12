@@ -35,7 +35,7 @@ let t1 = String.raw`unt": 0
 `
 
 
-export function main(str) {
+export function mainParse(str) {
     //Replace \"
     let t2 = str;
     t2 = t2.replace(/\\"/g, '');
@@ -123,7 +123,7 @@ export function main(str) {
     //let outObjs = t2.substring(startParsePos, endParsePos)
     let outObjs = JSON.parse("[" + t2.substring(startParsePos, endParsePos) + "]");
     console.log(outObjs);
-    return {Parsed: outObjs, pretext: UnparsedCharsAtBeginning, postText:UnparsedCharsAtEnd};
+    return {Parsed: outObjs, preText: UnparsedCharsAtBeginning, postText:UnparsedCharsAtEnd};
 
     function getNextQuoteIndex(startIndex, quoteIndices) {
         let largerNums = quoteIndices.filter(i => i > startIndex)

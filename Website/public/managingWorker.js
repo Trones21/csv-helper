@@ -2,7 +2,10 @@ let memoryAvailable = 0;
 let waitForMemoryResolve = ()  => {};
 let pauseMe = () => {};
 let workers = [];
- 
+let jsonFields = [];
+let chunksFinished = 0;
+let totalchunks = null;
+
  onmessage = function(e){
     
     switch(e.data.msgType){
@@ -30,6 +33,9 @@ let workers = [];
     let CHUNK_SIZE = 102400000;
     let file = f.data.fileList[0];
     let chunkCount = Math.ceil(file.size / CHUNK_SIZE);
+    //need as global var
+    totalchunks = Number(chunkCount);
+    
     let options = f.data.options;
     //initial Testing
     // let startIndex = 0;
@@ -50,8 +56,6 @@ let workers = [];
         }
         
     }
-    console.log(workers)
-
 }
 
 function sleep (time) {
@@ -66,15 +70,35 @@ async function waitForMemory() {
 }
 
 function handleMessage(e){
-    //switch()
-    console.log("Worker Finished")
-    console.log(workers.length)
+    
+    chunksFinished += 1;
+    console.log(e);
+    let msg =  {msgType:e.data.msgType, objs:e.data.objs};
+    updateProps(e.data.props);
+    console.log(e.data.msgType)
+    postMessage(msg)
     while(workers.length > 10){
         //Stabilizes Memory!!!!!
+        //Write to output file
         console.log("Removing Worker")
         let deleteMe =  workers.shift();
         deleteMe.worker.terminate();
+    }
+
+    if(chunksFinished === totalchunks){
+        console.log("All chunks processed");
+        console.log(jsonFields);
+        
     }    
+}
+
+function updateProps(incomingProps){
+    //Note; jsonFields is a global var
+    for(let i of incomingProps){
+        if(!jsonFields.includes(i)){
+            jsonFields.push(i);
+        }
+    }
 }
 
 function handleMultipleFiles(e){

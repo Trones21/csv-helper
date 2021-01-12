@@ -1,6 +1,9 @@
 import {convert, cleanUpModal} from './jsontocsv.mjs';
 import analyzerMain from './CSVAnalyzer.mjs';
+import streamSaver from './streamSaver.mjs';
 
+
+const fileStream = streamSaver.createWriteStream('filename.txt')
 var switchUI= function(){
     console.log("switchUi called")
     let choice = this.toString();
