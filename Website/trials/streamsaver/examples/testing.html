@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>testing</title>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js"></script>
+  <script src="../StreamSaver.js"></script>
+
+  <p>1) Set a filename</p>
+  <input type="text" id="$filename" value="sample.txt">
+
+  <hr>
+
+  <p>2) Write some data</p>
+
+  <button id="$a">Web Workers test</button>
+ 
+  <hr>
+
+  <p>3) Abort for cancel, close for ending the write stream</p>
+  <button disabled id="$abort">Abort</button>
+  <button disabled id="$close">Close</button>
+
+  <script>
+    var fileStream, writer
+    var encode = TextEncoder.prototype.encode.bind(new TextEncoder)
+
+    // Abort the download stream when leaving the page
+    //Need this or the writer throws an error
+    window.isSecureContext && window.addEventListener('beforeunload', evt => {
+      writer.abort()
+    })
+
+    $abort.onclick = () => {
+      writer.abort()
+      document.body.innerHTML = '<a href="./testing.html">Try again</a>'
+    }
+
+    $close.onclick = () => {
+      writer.close()
+      document.body.innerHTML = '<a href="./testing.html">Try again</a>'
+    }
+
+    $a.onclick = event => {
+
+      
+      $filename.disabled = true
+      $abort.disabled = $close.disabled = false
+     //Create filestream if it doesn't exist
+     if (!fileStream) {
+        fileStream = streamSaver.createWriteStream('sample.txt')
+        writer = fileStream.getWriter()
+      }
+
+      let data = '666666666666';
+
+      writeChunk(data, writer);
+    }
+
+    function writeChunk(chunk, writer) {
+      writer.write(encode(chunk))
+    }
+  </script>
+</body>
+
+</html>

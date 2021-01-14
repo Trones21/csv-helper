@@ -5,12 +5,6 @@
 
 export function convert() {
     
-    const fileStream = streamSaver.createWriteStream('test.txt');
-    let writeChunktoStream = (chunk) =>{
-        new Response(chunk).body
-        .pipeTo(fileStream)
-        .then(success, error)
-    }
     //Pre-Conversion Checks
     let fileNode = document.querySelector('.fileInput');
     if (fileNode.files.length > 1) { // && No option selected){
