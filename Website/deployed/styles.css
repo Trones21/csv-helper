@@ -1,0 +1,33 @@
+body {
+background-color: rgb(37, 43, 43);
+}
+
+h1,h2,h3, p{
+    color: white;
+}
+
+.header{
+    background-color: rgb(31, 31, 31);
+}
+
+.outerContainer {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.fileInput{
+    color: white;
+    border-right: #f7f9f9;
+    border-right-width: thick;
+    border-right-style: groove;
+}
+
+table{
+    margin: 0% 3% 3% 3%;
+}
+

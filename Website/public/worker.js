@@ -28,14 +28,14 @@ function processChunk(slice, workerId) {
     performance.mark(prem);
     let res = simpleMoveInward(text, workerId);
     let flatObjs = []
-    for (let obj of res){
+    for (let obj of res) {
         flatObjs.push(flatten(obj))
     }
     let props = [];
-    for(let obj of flatObjs){
+    for (let obj of flatObjs) {
         let objProps = Object.getOwnPropertyNames(obj)
-        for(let i of objProps){
-            if(!props.includes(i)){
+        for (let i of objProps) {
+            if (!props.includes(i)) {
                 props.push(i);
             }
         }
@@ -44,24 +44,24 @@ function processChunk(slice, workerId) {
     performance.measure("sim", prem, postm);
     console.log(performance.getEntriesByType("measure"));
     console.log("Processed chunk")
-    postMessage({msgType:"streamWriter", props:props , objs:flatObjs, workerId: this.workerId });
+    postMessage({ msgType: "streamWriter", props: props, objs: flatObjs, workerId: this.workerId });
 }
 
 //753 - 1838ms
-function simpleMoveInward(text, workerId){
+function simpleMoveInward(text, workerId) {
     let firstBracket = text.indexOf('{');
     let lastBracket = text.lastIndexOf('}');
 
-    try{
-        let out = JSON.parse('['+ text.slice(firstBracket, lastBracket + 1) + ']')
+    try {
+        let out = JSON.parse('[' + text.slice(firstBracket, lastBracket + 1) + ']')
         console.log("Success Parse")
         return out;
-    }catch{
-        console.log({FP: "FailParse"})
+    } catch {
+        console.log({ FP: "FailParse" })
         //console.log(text.slice(firstBracket, lastBracket + 1))
         return "";
     }
-    
+
 }
 
 //This is just WAAAY too SLOW. I should use simpleMoveInward instead.
@@ -84,7 +84,7 @@ function mainParse(str, workerId) {
     let checkChars = potentialCtrlChars.filter(i => i[0] !== '"')
 
     performance.mark(s3);
-    
+
     //let controlChars = alt3to4(checkChars, quoteIndices)
     let controlChars = main3to4(t2, checkChars, quoteIndices)
 
@@ -157,10 +157,6 @@ function mainParse(str, workerId) {
     let outObjs = JSON.parse("[" + t2.substring(startParsePos, endParsePos) + "]");
     console.log(outObjs);
     return { Parsed: outObjs, preText: UnparsedCharsAtBeginning, postText: UnparsedCharsAtEnd };
-
-
-
-
 }
 
 function getNextQuoteIndex(startIndex, quoteIndicesP) {
@@ -212,9 +208,9 @@ function main3to4(fulltext, checkChars, quoteIndices) {
 }
 
 function alt3to4(checkChars, quoteIndices) {
-  let x =  checkChars.map((i, idx) => {
+    let x = checkChars.map((i, idx) => {
 
-})
+    })
 
 
 }

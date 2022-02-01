@@ -1,68 +1,40 @@
+//Event Listeners at bottom of file
 
-//Note: Need to handle when there is an array with no keys: "m": [1, 2, 3]
-//This is a case where the user needs to determine the proper output
-
-
-export function convert() {
-    console.log('Convert')
-    //Pre-Conversion Checks
+function convert() {
+    const myWorker = new Worker("worker.js");
     let fileNode = document.querySelector('.fileInput');
-    if (fileNode.files.length > 1) { // && No option selected){
-        window.alert("Multiple input files chosen. You must choose an output option under the Advanced Options Menu")
-    } else {
-
-        //Convert
-        let managingWorker = new Worker("managingWorker.js");
-        let options = gatherOptions(fileNode.files.length);
-        managingWorker.postMessage({ fileList: fileNode.files, msgType: "processData", options: options });
-
-        managingWorker.onmessage = function (e) {
-            switch (e.data.msgType) {
-                case "streamWriter":
-                    writeChunktoStream("adasdasda---\r\n");
-                    break;
-                case "memoryInfoRequested":
-                    let memAvail = performance.memory.jsHeapSizeLimit - performance.memory.totalJSHeapSize;
-                    managingWorker.postMessage({ msgType: "memoryInfoReceived", memoryAvailable: memAvail });
-                    break;
-                case "stepList":
-                    updateStepList(e.data.stepClassName)
-                    break;
-                case "progBar":
-                    updateProgressBar(e.data.params.msg, e.data.params.pctDone)
-                    break;
-                case "outputData":
-                    let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
-                    //updateStepList('convertFileStatus');
-                    //updateProgressBar(`Converted! Writing CSV`, 95)
-                    writeCSV(e.data.headersStr + e.data.recordsStr, outfileName);
-                    //updateProgressBar(`Finished!`, 100)
-                    break;
-                case "error":
-                    let errorDiv = document.createElement('div');
-                    errorDiv.innerText = e.data.err;
-                    document.getElementsByClassName('modal-body')[0].appendChild(errorDiv);
-                    break;
-                default:
-                    console.log("Invalid Case sent from Worker")
-                    break;
-            }
+    myWorker.postMessage({
+        fileList: fileNode.files,
+        delimiter: document.querySelector('#specifyDelimiter').value.trim() || ",",
+        keyReplace: "",
+        valReplace: " ",
+        //ToDo: After writing advanced options i will pull these from input boxes (obviously)
+    });
+    myWorker.onmessage = function (e) {
+        switch (e.data.msgType) {
+            case "stepList":
+                updateStepList(e.data.stepClassName)
+                break;
+            case "progBar":
+                updateProgressBar(e.data.params.msg, e.data.params.pctDone)
+                break;
+            case "outputData":
+                let outfileName = document.querySelector('.fileInput').value.split('\\')[2].split('.')[0]
+                updateStepList('convertFileStatus');
+                updateProgressBar(`Converted! Writing CSV`, 95)
+                writeCSV(e.data.headersStr + e.data.recordsStr, outfileName);
+                updateProgressBar(`Finished!`, 100)
+                break;
+            case "error":
+                let errorDiv = document.createElement('div');
+                errorDiv.innerText = e.data.err;
+                document.getElementsByClassName('modal-body')[0].appendChild(errorDiv);
+                break;
+            default:
+                console.log("Invalid Case sent from Worker")
+                break;
         }
-
-        console.log(managingWorker);
     }
-
-
-}
-
-
-
-const gatherOptions = (fileNode) => {
-    let options = {};
-    console.log(fileNode)
-    options.delimiter = document.querySelector('#specifyDelimiter').value.trim() || ",";
-
-    return options;
 }
 
 const updateProgressBar = (Message, pctDone) => {
@@ -77,7 +49,7 @@ const updateStepList = (stepClassName) => {
     stepList.getElementsByClassName(stepClassName)[0].innerText = '\u2714';
 }
 
-export const cleanUpModal = () => {
+const cleanUpModal = () => {
     let modalBody = document.getElementsByClassName('modal-body')[0];
     modalBody.innerHTML = `<table class="stepList">
     <tr class="step">
@@ -106,6 +78,12 @@ export const cleanUpModal = () => {
 }
 
 
+
+//*************DO NOT USE ************/
+//*************DO NOT USE ************/
+//*************DO NOT USE ************/
+//*************DO NOT USE ************/
+
 const handleFilewithoutWorker = () => {
     let fileNode = document.querySelector('.fileInput');
     const fileList = fileNode.files;
@@ -119,17 +97,15 @@ const handleFilewithoutWorker = () => {
             let initialArray = data.map((i) => JSON.flatten(i))
             updateProgressBar("Array Flattened", 0);
             let delimiter = document.querySelector('#specifyDelimiter').value.trim() || ",";
-            let replacement = document.querySelector('#replaceDelimiter').value.trim() || " ";
+            console.log(initialArray)
             //Prep - I have non-uniform objects so I need to create a masterObject to ensure my columns line up 
-
-            //There 
-            let masterObj = determineMasterObject(initialArray);
-            let cleanedData = cleanData(initialArray, delimiter, replacement);
+            let masterObj = determineMasterObject(initialArray)
+            let cleanedData = cleanData(initialArray, delimiter, replacement)
             let headersStr = getCSVstring_PropNamesAsHeaders(cleanedData, masterObj, delimiter);
 
 
             //Convert & Write
-            let recordsStr = ConvertToCSV(cleanedData, masterObj, delimiter);
+            let recordsStr = ConvertToCSV(cleanData, masterObj, delimiter);
             updateProgressBar(`Finished! Writing File`, 100)
             writeCSV(headersStr + recordsStr, outfileName);
 
@@ -142,6 +118,9 @@ const handleFilewithoutWorker = () => {
     reader.readAsText(fileList[0])
 
 }
+//******************************************************************************************/
+//******************************************************************************************/
+//******************************************************************************************/
 
 //CSV Functions
 function ConvertToCSV(objArray, masterObj, delimiter) {
@@ -260,24 +239,12 @@ function getCSVstring_PropNamesAsHeaders(objArray, masterObj, delimiter) {
     return headersObj.str + '\r\n';
 }
 
+//Alternate to cleanData
 function removeDelimiterfromProps(objArr, delimiter) {
     for (let obj of objArr) {
         for (let key in obj) {
             if (typeof obj[key] == "string") {
                 obj[key] = obj[key].split(delimiter).join(' ')
-            }
-        }
-    }
-    return objArr;
-
-}
-
-function cleanData(objArr, expression, replacement) {
-    let regex = new RegExp(expression, "g")
-    for (let obj of objArr) {
-        for (let key in obj) {
-            if (typeof obj[key] == "string") {
-                obj[key] = obj[key].replace(regex, replacement);
             }
         }
     }
@@ -310,7 +277,10 @@ JSON.flatten = function (data) {
     return result;
 }
 
+let uploadBtn = document.getElementsByClassName('uploadbtn')[0];
+uploadBtn.addEventListener('click', convert, false);
 
-
+let modalCloseBtn = document.getElementsByClassName('modalClose')[0];
+modalCloseBtn.addEventListener('click', cleanUpModal, false);
 
 
