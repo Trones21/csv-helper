@@ -38,12 +38,10 @@ onmessage = function (e) {
             let perf = performance.getEntriesByType("measure")
 
             self.importScripts('testingHelpers.js');
-            let getMySize = cleanedData.slice(0, 500)
-            let metrics = gatherMetrics(memorySizeOf, perf, getMySize, { a: 1 })
+            self.importScripts('runLengthEncode.js');
+            let rledData = runLengthEncode(cleanedData);
+            let metrics = gatherMetrics(memorySizeOf, perf, cleanedData, rledData)
             console.log(metrics);
-            let getMySize2 = cleanedData.slice(0, 250)
-            let metrics2 = gatherMetrics(memorySizeOf, perf, getMySize2, { a: 1 })
-            console.log(metrics2);
             //sendMetrics()
 
         } catch (err) {
